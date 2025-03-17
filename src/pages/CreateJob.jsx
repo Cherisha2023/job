@@ -6,7 +6,7 @@ import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyABka1cmCcYBguqAn6V-QFdBRtXCFm9rPk",
+  apiKey: "AIzaSyABka1eC9Bh_l-UNjK5J1RTGloFsxUjO_g",
   authDomain: "job-management-161b6.firebaseapp.com",
   projectId: "job-management-161b6",
   storageBucket: "job-management-161b6.appspot.com",
@@ -18,6 +18,48 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const jobTitles = [
+  "Applications Engineer", "Computer Programmer", "Computer Scientist", "Data Quality Manager",
+  "Data Scientist", "IT Coordinator", "IT Director", "Software Engineer"
+];
+
+const companies = [
+  "Infosys", "Tata Consultancy Services", "Tech Mahindra", "HCL Technologies", "Accenture", "Mphasis", "Wipro",
+  "3i Infotech limited", "Capgemini", "CodeCrafters", "Cognizant", "Coreconnect Tech", "DigitalX", "Horizon Soft",
+  "Innova", "Innovaspark Tech", "Quantum", "Sonata Software", "TechFlow", "Techtide Innovations"
+];
+
+const locations = [
+  "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune", "Ahmedabad", "Jaipur", "Chandigarh"
+];
+
+const InputField = ({ label, icon: Icon, ...props }) => (
+  <div>
+    <label className="block text-gray-600 mb-1 font-semibold">{label}</label>
+    <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
+      <div className="p-2 bg-gray-100 border-r border-gray-300">
+        <Icon className="text-gray-500" size={20} />
+      </div>
+      <input
+        {...props}
+        className="w-full p-2 focus:outline-none text-gray-700"
+      />
+    </div>
+  </div>
+);
+
+const TextAreaField = ({ label, icon: Icon, ...props }) => (
+  <div>
+    <label className="block text-gray-600 mb-1 font-semibold">{label}</label>
+    <div className="flex items-start border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
+      <div className="p-2 bg-gray-100 border-r border-gray-300">
+        <Icon className="text-gray-500" size={20} />
+      </div>
+      <textarea {...props} className="w-full p-2 focus:outline-none text-gray-700" rows="5"></textarea>
+    </div>
+  </div>
+);
 
 const CreateJob = () => {
   const [jobDetails, setJobDetails] = useState({
@@ -36,7 +78,7 @@ const CreateJob = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setJobDetails({ ...jobDetails, [name]: value });
+    setJobDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -51,54 +93,46 @@ const CreateJob = () => {
     }
   };
 
-  const InputField = ({ label, icon: Icon, ...props }) => (
-    <div>
-      <label className="block text-gray-600 mb-1 font-semibold">{label}</label>
-      <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
-        <div className="p-2 bg-gray-100 border-r border-gray-300">
-          <Icon className="text-gray-500" size={20} />
-        </div>
-        <input
-          {...props}
-          className="w-full p-2 focus:outline-none text-gray-700"
-        />
-      </div>
-    </div>
-  );
-
-  const TextAreaField = ({ label, icon: Icon, ...props }) => (
-    <div>
-      <label className="block text-gray-600 mb-1 font-semibold">{label}</label>
-      <div className="flex items-start border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
-        <div className="p-2 bg-gray-100 border-r border-gray-300">
-          <Icon className="text-gray-500" size={20} />
-        </div>
-        <textarea {...props} className="w-full p-2 focus:outline-none text-gray-700" rows="3"></textarea>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-lg">
         <h1 className="text-3xl font-extrabold text-center text-gray-700 mb-6">Create a New Job</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <InputField label="Job Title" name="title" value={jobDetails.title} onChange={handleChange} required icon={Briefcase} />
-          <InputField label="Company" name="company" value={jobDetails.company} onChange={handleChange} required icon={Building} />
-          <InputField label="Location" name="location" value={jobDetails.location} onChange={handleChange} required icon={MapPin} />
+          <div>
+            <label className="block text-gray-600 mb-1 font-semibold">Job Title</label>
+            <select name="title" value={jobDetails.title} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none text-gray-700 bg-white">
+              <option value="">Select Job Title</option>
+              {jobTitles.map((title) => (
+                <option key={title} value={title}>{title}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-gray-600 mb-1 font-semibold">Company</label>
+            <select name="company" value={jobDetails.company} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none text-gray-700 bg-white">
+              <option value="">Select Company</option>
+              {companies.map((company) => (
+                <option key={company} value={company}>{company}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-gray-600 mb-1 font-semibold">Location</label>
+            <select name="location" value={jobDetails.location} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none text-gray-700 bg-white">
+              <option value="">Select Location</option>
+              {locations.map((location) => (
+                <option key={location} value={location}>{location}</option>
+              ))}
+            </select>
+          </div>
           <div>
             <label className="block text-gray-600 mb-1 font-semibold">Job Type</label>
-            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
-              <div className="p-2 bg-gray-100 border-r border-gray-300">
-                <List className="text-gray-500" size={20} />
-              </div>
-              <select name="jobType" value={jobDetails.jobType} onChange={handleChange} className="w-full p-2 focus:outline-none text-gray-700 bg-white">
-                <option>Full-time</option>
-                <option>Part-time</option>
-                <option>Contract</option>
-                <option>Internship</option>
-              </select>
-            </div>
+            <select name="jobType" value={jobDetails.jobType} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none text-gray-700 bg-white">
+              <option>Full-time</option>
+              <option>Part-time</option>
+              <option>Contract</option>
+              <option>Internship</option>
+            </select>
           </div>
           <InputField label="Salary" type="number" name="salary" value={jobDetails.salary} onChange={handleChange} required icon={DollarSign} />
           <TextAreaField label="Job Description" name="jobDescription" value={jobDetails.jobDescription} onChange={handleChange} icon={FileText} />
